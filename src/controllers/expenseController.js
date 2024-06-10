@@ -1,3 +1,4 @@
+import fastify from 'fastify';
 import Expense from '../models/expense.js';
 
 
@@ -17,8 +18,15 @@ export const createExpense = async (request, reply) => {
   if (new Date(date) < new Date(new Date().setFullYear(new Date().getFullYear() - 1))) {
     return reply.status(400).send('Date cannot be more than 1 year ago.');
   }
-
-  if (new Date(date) > new Date()) {
+  
+  // 不能是未來的資料，但是可以是今天，所以使用大於等於
+  // 只比較日期，不比較時間 (00:00:00)
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0); // Set time to 00:00:00
+  const inputDate = new Date(date);
+  inputDate.setHours(0, 0, 0, 0); // Set time to 00:00:00
+  if (inputDate > currentDate) {
+    console.info(`new Date(date): ${inputDate}, vs new Date(): ${currentDate}`);
     return reply.status(400).send('Date cannot be in the future.');
   }
 

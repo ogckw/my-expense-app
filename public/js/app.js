@@ -92,10 +92,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
 
-    // 檢查日期區間是否超過 30 天
+    // 檢查日期區間是否合規
+    if ((startDate && !endDate) || (!startDate && endDate)) {
+      alert('請同時指定開始日期和結束日期');
+      return;
+    }
+
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
+
+      if (start > end) {
+        alert('開始日期不能晚於結束日期');
+        return;
+      }
+
       const diffTime = Math.abs(end - start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
